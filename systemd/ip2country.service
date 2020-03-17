@@ -1,0 +1,11 @@
+[Unit]
+Description=IPv4 address to Country Mapper
+
+[Service]
+User=itzmeanjan
+WorkingDirectory=/path/to/directory
+ExecStart=ip2country /path/to/data/file
+Restart=Always
+
+[Install]
+WantedBy=multi-user.target
