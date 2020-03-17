@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 from typing import List
-from model.iprange import IPRange
+from .iprange import IPRange
 from math import nan, isnan
 from ipaddress import IPv4Address
 

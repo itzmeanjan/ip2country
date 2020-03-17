@@ -1,13 +1,29 @@
 #!/usr/bin/python3
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from model.ip2country import IP2Country
+from .model.ip2country import IP2Country
 from re import compile as rcompile
 from os import environ
 from json import dumps
+from os.path import dirname, join, abspath, exists
+from sys import argv
+
+
+def getDataFile():
+    try:
+        if len(argv) != 2:
+            raise Exception("Data file not provided")
+        path = abspath(argv[1])
+        if not exists(path):
+            raise Exception("Data file not provided")
+        return path
+    except Exception as e:
+        print(str(e))
+        exit(1)
+
 
 # will be used for looking up ip address, like we do in case of map/ dict, if found, returns country record
-ip2country = IP2Country.read('./data/IP2LOCATION-LITE-DB1.CSV')
+ip2country = IP2Country.read(getDataFile())
 # regex for extract IPv4 address from a string i.e. request path
 reg = rcompile(r'((\d{1,3}\.){3}\d{1,3})')
 
@@ -49,7 +65,7 @@ def serve():
     port = int(environ.get('IP2COUNTRYPORT') or '8008')
     server = HTTPServer(("", port), Handler)
     try:
-        print("IP2Country listening :{} ...".format(port))
+        print("[+]IP2Country listening :{} ...".format(port))
         server.serve_forever()  # keeps serving GET request until explicitly closed
     except Exception:
         server.server_close()  # in case on occurance of error, shuts server down
