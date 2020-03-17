@@ -4,7 +4,7 @@ Description=IPv4 address to Country Mapper
 [Service]
 User=itzmeanjan
 WorkingDirectory=/path/to/directory
-ExecStart=ip2country /path/to/data/file
+ExecStart=ip2c /path/to/data/file
 Restart=Always
 
 [Install]

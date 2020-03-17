@@ -3,7 +3,7 @@ requires = ["flit_core >=2,<3"]
 build-backend = "flit_core.buildapi"
 
 [tool.flit.metadata]
-module = "ip2country"
+module = "ip2c"
 author = "Anjan Roy"
 author-email = "anjanroy@yandex.com"
 home-page = "https://github.com/itzmeanjan/ip2country"
@@ -11,7 +11,7 @@ classifiers = ["License :: OSI Approved :: MIT License"]
 description-file="README.md"
 
 [tool.flit.sdist]
-exclude=["systemd"]
+exclude=["systemd", "data"]
 
 [tool.flit.scripts]
-ip2country = "ip2country.main:main"
+ip2c = "ip2c.main:main"
