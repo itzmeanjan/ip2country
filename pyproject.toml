@@ -8,6 +8,7 @@ author = "Anjan Roy"
 author-email = "anjanroy@yandex.com"
 home-page = "https://github.com/itzmeanjan/ip2country"
 classifiers = ["License :: OSI Approved :: MIT License"]
+requires-python=">=3.7"
 description-file="README.md"
 
 [tool.flit.sdist]
