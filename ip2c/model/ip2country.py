@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from __future__ import annotations
-from typing import List
+from typing import List, Dict
 from .iprange import IPRange
 from math import nan, isnan
 from ipaddress import IPv4Address
@@ -13,20 +13,42 @@ class IP2Country:
         it'll read that file, parse its content and build one object model
         so that querying one IPv4 address gets easier
 
-        For storing records we'll use a dictionary of IPRange -> 'countrycode:countryname',
+        For storing records we'll use a dictionary of IPRange -> int,
         it facilitates constant time lookup, but we'll require to search for which range our
-        IP address belongs to, which can be searched for, using binary search in O(log n) time.
+        IP address belongs to, which can be done using binary search in O(log n) time.
+
+        To decrease redundancy of data stored in memory, I'm now ( from v_0.1.2 ) 
+        not putting a `IPRange` to `str` mapping ( in memory ), where each `str` denotes 
+        `countryCode:countryName`, but these pairs weren't unique, so we were storing 
+        same `countryCode:countryName` pairs multiple number of times. Now I'm only 
+        mapping each IPRange to an index of another list, which keeps unique country names only, 
+        thus reducing redundancy to a great level.
     '''
 
     def __init__(self):
-        self.holder = {}
+        self.holder: Dict[IPRange, int] = {}
+        self.countries: List[str] = []
+
+    def _insertCountry(self, country: str) -> int:
+        '''
+            Given a country name ( i.e. string of format `countryCode:countryName` )
+            we'll first check whether that's already present in unqiue country name
+            list or not, if yes, we'll simply return its index; else we'll append 
+            that record at end & return index where we inserted this country record,
+            which is to be kept in self.holder map ( mapping IPRange :-> int, 
+            index of owning country in self.countries list )
+        '''
+        if country in self.countries:
+            return self.countries.index(country)
+        self.countries.append(country)
+        return len(self.countries) - 1
 
     def _attach(self, record: List[str]):
         '''
             Private method implementation, used for putting a key:value record into this object
         '''
         self.holder[IPRange(*[int(i.strip("\""), base=10) for i in record[:2]])
-                    ] = ":".join([i.strip("\"") for i in record[2:]])
+                    ] = self._insertCountry(":".join([i.strip("\"") for i in record[2:]]))
 
     @staticmethod
     def read(file: str) -> IP2Country:
@@ -83,7 +105,7 @@ class IP2Country:
         '''
         iprng = self._search(int(IPv4Address(key)))
         if iprng:
-            return self.holder[iprng]
+            return self.countries[self.holder[iprng]]
         else:
             return None
 

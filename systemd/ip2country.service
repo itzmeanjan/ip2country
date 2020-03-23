@@ -5,7 +5,7 @@ Description=IPv4 address to Country Mapper
 User=itzmeanjan
 WorkingDirectory=/path/to/directory
 ExecStart=ip2c /path/to/data/file
-Restart=Always
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
